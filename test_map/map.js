@@ -98,13 +98,34 @@ countries.forEach(country => {
                     Object.keys(languages).forEach(key => {
                         languagesOutput.innerHTML += `<li>${languages[key]}</li>`;
                     });
-                    // Wait for new flag image to load
-                    countryFlagOutput.onload = () => {
-                        // Show container with country info
+
+                    // Function to show content and hide loading
+                    const showContent = () => {
                         container.classList.remove("hide");
-                        // Hide loading screen
                         loading.classList.add("hide");
                     };
+
+                    // Set timeout as fallback in case image fails to load
+                    const imageLoadTimeout = setTimeout(() => {
+                        console.warn("Image load timeout - showing content anyway");
+                        showContent();
+                    }, 5000);
+
+                    // Wait for new flag image to load
+                    countryFlagOutput.onload = () => {
+                        clearTimeout(imageLoadTimeout);
+                        showContent();
+                    };
+
+                    // Handle image load errors
+                    countryFlagOutput.onerror = () => {
+                        clearTimeout(imageLoadTimeout);
+                        console.error("Failed to load flag image");
+                        showContent();
+                    };
+
+                    // Trigger image load by setting src
+                    countryFlagOutput.src = data[0].flags.png;
                 }, 500);
             })
             // Handle errors
