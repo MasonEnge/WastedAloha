@@ -80,7 +80,7 @@ countries.forEach(country => {
                     // Capital City
                     cityOutput.innerText = data[0].capital;
                     // Change number format to include dots in big numbers
-                    const formatedNumber = data[0].area.toLocalString('de-DE');
+                    const formatedNumber = data[0].area.toLocaleString('de-DE');
                     areaOutput.innerHTML = formatedNumber + ` km<sup>2</sup>`;
                     // Currency
                     // Get the currencies object
