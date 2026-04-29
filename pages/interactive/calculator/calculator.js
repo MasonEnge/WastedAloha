@@ -103,7 +103,7 @@ function drawChart(labels, data) {
                 data: data,
 
                 //line color
-                borderColor: "#c66767",
+                borderColor: "#d32f2f",
                 borderWidth: 3,
 
                 //points
