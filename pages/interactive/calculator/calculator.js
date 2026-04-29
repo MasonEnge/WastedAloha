@@ -1,7 +1,10 @@
 let groceryData = {};
 let chartInstance = null;
 
-// LOAD DATA
+/* -------------------------
+   LOAD DATA
+--------------------------*/
+
 async function loadData() {
 
     const response = await fetch(
@@ -14,7 +17,7 @@ async function loadData() {
 }
 
 /* -------------------------
-   POPULATE STATES ONLY
+   POPULATE STATES
 --------------------------*/
 
 function populateStates() {
@@ -32,7 +35,7 @@ function populateStates() {
 }
 
 /* -------------------------
-   CALCULATE ALL YEARS
+   CALCULATE ACROSS YEARS
 --------------------------*/
 
 function calculateCartOverTime() {
@@ -55,7 +58,6 @@ function calculateCartOverTime() {
     ];
 
     const years = Object.keys(groceryData[state]).sort();
-
     const totals = [];
 
     years.forEach(year => {
@@ -96,22 +98,21 @@ function drawChart(labels, data) {
 
     chartInstance = new Chart(ctx, {
         type: "line",
+
         data: {
             labels: labels,
             datasets: [{
                 label: "Total Cart Cost ($)",
                 data: data,
 
-                //line color
                 borderColor: "#d32f2f",
                 borderWidth: 3,
 
-                //points
                 pointRadius: 4,
                 pointHoverRadius: 7,
                 pointBackgroundColor: "#d32f2f",
 
-                tension: 0.35
+                tension: 0
             }]
         },
 
@@ -121,11 +122,9 @@ function drawChart(labels, data) {
 
             plugins: {
 
-                //title/legend text
                 legend: {
                     labels: {
                         color: "#000",
-
                         font: {
                             size: 14,
                             family: "Cambria Math, 'Times New Roman', serif"
@@ -133,7 +132,6 @@ function drawChart(labels, data) {
                     }
                 },
 
-                //tooltip popup
                 tooltip: {
                     backgroundColor: "#fff",
                     titleColor: "#000",
@@ -143,20 +141,27 @@ function drawChart(labels, data) {
                         size: 14,
                         family: "Cambria Math, 'Times New Roman', serif"
                     },
+
                     bodyFont: {
                         size: 13,
                         family: "Cambria Math, 'Times New Roman', serif"
+                    },
+
+                    callbacks: {
+                        label: function(context) {
+                            return "Total: $" + context.raw.toFixed(2);
+                        }
                     }
                 }
             },
 
             scales: {
 
-                //x axis
                 x: {
                     grid: {
                         display: false
                     },
+
                     ticks: {
                         color: "#000",
                         maxRotation: 45,
@@ -166,24 +171,52 @@ function drawChart(labels, data) {
                             size: 12,
                             family: "Cambria Math, 'Times New Roman', serif"
                         }
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Year",
+                        color: "#000",
+
+                        font: {
+                            size: 14,
+                            family: "Cambria Math, 'Times New Roman', serif",
+                            weight: "bold"
+                        }
                     }
                 },
 
-                //y axis
                 y: {
                     grid: {
                         color: "rgba(0,0,0,0.08)"
                     },
+
                     ticks: {
                         color: "#000",
 
                         font: {
                             size: 12,
                             family: "Cambria Math, 'Times New Roman', serif"
+                        },
+
+                        callback: function(value) {
+                            return "$" + value.toFixed(2);
                         }
                     },
 
-                    beginAtZero: true
+                    beginAtZero: true,
+
+                    title: {
+                        display: true,
+                        text: "Total Cart Cost (USD)",
+                        color: "#000",
+
+                        font: {
+                            size: 14,
+                            family: "Cambria Math, 'Times New Roman', serif",
+                            weight: "bold"
+                        }
+                    }
                 }
             }
         }
