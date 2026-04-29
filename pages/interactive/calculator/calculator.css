@@ -134,9 +134,9 @@ button:hover {
 
 #priceChart {
     width: 100%;
-    max-height: 400px;
+    max-height: 800px;
 }
 
 .result-card {
-    padding: 30px;
+    padding: 10px;
 }

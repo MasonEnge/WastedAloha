@@ -102,55 +102,87 @@ function drawChart(labels, data) {
                 label: "Total Cart Cost ($)",
                 data: data,
 
-                borderColor: "#2e7d32",
+                //line color
+                borderColor: "#c66767",
                 borderWidth: 3,
+
+                //points
                 pointRadius: 4,
                 pointHoverRadius: 7,
-                pointBackgroundColor: "#1b5e20",
-
-                fill: true,
-                backgroundColor: "rgba(46, 125, 50, 0.15)",
+                pointBackgroundColor: "#d32f2f",
 
                 tension: 0.35
             }]
         },
+
         options: {
             responsive: true,
             maintainAspectRatio: false,
 
             plugins: {
+
+                //title/legend text
                 legend: {
                     labels: {
+                        color: "#000",
+
                         font: {
-                            size: 14
+                            size: 14,
+                            family: "Cambria Math, 'Times New Roman', serif"
                         }
                     }
                 },
+
+                //tooltip popup
                 tooltip: {
-                    backgroundColor: "#1b5e20",
+                    backgroundColor: "#fff",
+                    titleColor: "#000",
+                    bodyColor: "#000",
+
                     titleFont: {
-                        size: 14
+                        size: 14,
+                        family: "Cambria Math, 'Times New Roman', serif"
                     },
                     bodyFont: {
-                        size: 13
+                        size: 13,
+                        family: "Cambria Math, 'Times New Roman', serif"
                     }
                 }
             },
 
             scales: {
+
+                //x axis
                 x: {
                     grid: {
                         display: false
                     },
                     ticks: {
+                        color: "#000",
                         maxRotation: 45,
-                        minRotation: 45
+                        minRotation: 45,
+
+                        font: {
+                            size: 12,
+                            family: "Cambria Math, 'Times New Roman', serif"
+                        }
                     }
                 },
+
+                //y axis
                 y: {
                     grid: {
                         color: "rgba(0,0,0,0.08)"
                     },
+                    ticks: {
+                        color: "#000",
+
+                        font: {
+                            size: 12,
+                            family: "Cambria Math, 'Times New Roman', serif"
+                        }
+                    },
+
                     beginAtZero: true
                 }
             }
