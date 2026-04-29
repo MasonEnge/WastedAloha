@@ -58,15 +58,6 @@
                 </select>
             </div>
 
-            <!-- YEAR -->
-            <div class="form-group">
-                <label for="year">📅 Year</label>
-
-                <select id="year">
-                    <option value="">Select a year...</option>
-                </select>
-            </div>
-
             <hr>
 
             <h3>🛒 Grocery Cart</h3>
@@ -118,22 +109,17 @@
         </form>
 
         <!-- RESULTS -->
-        <div id="results"
-             class="calculator-results"
-             style="display: none;">
+        <div id="results" class="calculator-results" style="display: none;">
 
             <div class="result-card">
 
-                <div class="result-icon">💰</div>
+                <div class="result-icon">📈</div>
 
                 <div class="result-content">
-                    <h3>Total Cart Cost</h3>
+                    <h3>Cart Price Over Time</h3>
 
-                    <p class="result-value">
-                        $<span id="cartTotal">0.00</span>
-                    </p>
+                    <canvas id="priceChart"></canvas>
 
-                    <p id="summaryText"></p>
                 </div>
 
             </div>
@@ -153,6 +139,7 @@
 </footer>
 
 <script src="/WastedAloha/pages/interactive/calculator/calculator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
 </html>

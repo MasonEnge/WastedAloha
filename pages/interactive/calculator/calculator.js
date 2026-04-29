@@ -1,6 +1,7 @@
 let groceryData = {};
+let chartInstance = null;
 
-// LOAD JSON
+// LOAD DATA
 async function loadData() {
 
     const response = await fetch(
@@ -10,11 +11,10 @@ async function loadData() {
     groceryData = await response.json();
 
     populateStates();
-    populateYears();
 }
 
 /* -------------------------
-   POPULATE DROPDOWNS
+   POPULATE STATES ONLY
 --------------------------*/
 
 function populateStates() {
@@ -31,37 +31,19 @@ function populateStates() {
     });
 }
 
-function populateYears() {
-
-    const yearSelect = document.getElementById("year");
-
-    for (let year = 2000; year <= 2026; year++) {
-
-        const option = document.createElement("option");
-        option.value = year;
-        option.textContent = year;
-
-        yearSelect.appendChild(option);
-    }
-}
-
 /* -------------------------
-   CART CALCULATION
+   CALCULATE ALL YEARS
 --------------------------*/
 
-function calculateCart() {
+function calculateCartOverTime() {
 
     const state = document.getElementById("state").value;
-    const year = document.getElementById("year").value;
 
-    if (!state || !year) {
-        alert("Please select a state and year.");
+    if (!state || !groceryData[state]) {
+        alert("Please select a state.");
         return;
     }
 
-    const prices = groceryData[state][year];
-
-    // All supported items (banana removed)
     const items = [
         "milk",
         "bread",
@@ -72,26 +54,67 @@ function calculateCart() {
         "groundBeef"
     ];
 
-    let total = 0;
+    const years = Object.keys(groceryData[state]).sort();
 
-    items.forEach(item => {
+    const totals = [];
 
-        const qty =
-            parseInt(document.getElementById(`${item}Qty`)?.value) || 0;
+    years.forEach(year => {
 
-        if (prices[item] !== undefined) {
-            total += qty * prices[item];
-        }
+        const prices = groceryData[state][year];
+
+        let total = 0;
+
+        items.forEach(item => {
+
+            const qty =
+                parseInt(document.getElementById(`${item}Qty`)?.value) || 0;
+
+            if (prices[item] !== undefined) {
+                total += qty * prices[item];
+            }
+        });
+
+        totals.push(total);
     });
 
-    document.getElementById("cartTotal").textContent =
-        total.toFixed(2);
+    drawChart(years, totals);
 
-    document.getElementById("summaryText").textContent =
-        `Estimated grocery prices in ${state} during ${year}.`;
+    document.getElementById("results").style.display = "block";
+}
 
-    document.getElementById("results").style.display =
-        "block";
+/* -------------------------
+   CHART RENDERING
+--------------------------*/
+
+function drawChart(labels, data) {
+
+    const ctx = document.getElementById("priceChart");
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Total Cart Cost ($)",
+                data: data,
+                borderColor: "#1b5e20",
+                backgroundColor: "rgba(27, 94, 32, 0.2)",
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 /* -------------------------
@@ -100,6 +123,6 @@ function calculateCart() {
 
 document
     .getElementById("calculateBtn")
-    .addEventListener("click", calculateCart);
+    .addEventListener("click", calculateCartOverTime);
 
 loadData();
