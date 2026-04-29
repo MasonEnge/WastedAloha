@@ -77,9 +77,9 @@ function calculateCartOverTime() {
         totals.push(total);
     });
 
-    drawChart(years, totals);
-
     document.getElementById("results").style.display = "block";
+
+    drawChart(years, totals);
 }
 
 /* -------------------------
