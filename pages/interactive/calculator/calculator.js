@@ -4,7 +4,7 @@ let groceryData = {};
 async function loadData() {
 
     const response = await fetch(
-        "/WastedAloha/data/calculator_data.json"
+        "/WastedAloha/pages/interactive/calculator/calculator_data.json"
     );
 
     groceryData = await response.json();
