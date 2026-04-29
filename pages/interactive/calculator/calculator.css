@@ -131,3 +131,12 @@ button:hover {
     }
 
 }
+
+#priceChart {
+    width: 100%;
+    max-height: 400px;
+}
+
+.result-card {
+    padding: 30px;
+}

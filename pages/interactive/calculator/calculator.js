@@ -101,15 +101,56 @@ function drawChart(labels, data) {
             datasets: [{
                 label: "Total Cart Cost ($)",
                 data: data,
-                borderColor: "#1b5e20",
-                backgroundColor: "rgba(27, 94, 32, 0.2)",
-                tension: 0.3
+
+                borderColor: "#2e7d32",
+                borderWidth: 3,
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                pointBackgroundColor: "#1b5e20",
+
+                fill: true,
+                backgroundColor: "rgba(46, 125, 50, 0.15)",
+
+                tension: 0.35
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "#1b5e20",
+                    titleFont: {
+                        size: 14
+                    },
+                    bodyFont: {
+                        size: 13
+                    }
+                }
+            },
+
             scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                },
                 y: {
+                    grid: {
+                        color: "rgba(0,0,0,0.08)"
+                    },
                     beginAtZero: true
                 }
             }
