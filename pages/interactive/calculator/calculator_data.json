@@ -1,0 +1,97 @@
+{
+    "Hawaii": {
+        "2000": {
+            "milk": 2.50,
+            "bread": 1.80,
+            "eggs": 1.20,
+            "rice": 3.00,
+            "chicken": 2.90,
+            "apples": 1.50,
+            "groundBeef": 3.20
+        },
+
+        "2010": {
+            "milk": 4.20,
+            "bread": 3.50,
+            "eggs": 2.80,
+            "rice": 5.50,
+            "chicken": 5.10,
+            "apples": 2.80,
+            "groundBeef": 5.90
+        },
+
+        "2026": {
+            "milk": 6.50,
+            "bread": 5.00,
+            "eggs": 7.00,
+            "rice": 9.50,
+            "chicken": 9.20,
+            "apples": 4.90,
+            "groundBeef": 11.50
+        }
+    },
+
+    "California": {
+        "2000": {
+            "milk": 2.20,
+            "bread": 1.60,
+            "eggs": 1.10,
+            "rice": 2.80,
+            "chicken": 2.60,
+            "apples": 1.30,
+            "groundBeef": 3.00
+        },
+
+        "2010": {
+            "milk": 3.80,
+            "bread": 2.90,
+            "eggs": 2.40,
+            "rice": 4.60,
+            "chicken": 4.40,
+            "apples": 2.40,
+            "groundBeef": 5.10
+        },
+
+        "2026": {
+            "milk": 5.90,
+            "bread": 4.50,
+            "eggs": 6.20,
+            "rice": 8.20,
+            "chicken": 7.80,
+            "apples": 4.20,
+            "groundBeef": 10.20
+        }
+    },
+
+    "Puerto Rico": {
+        "2000": {
+            "milk": 2.10,
+            "bread": 1.50,
+            "eggs": 1.00,
+            "rice": 2.50,
+            "chicken": 2.40,
+            "apples": 1.20,
+            "groundBeef": 2.80
+        },
+
+        "2010": {
+            "milk": 3.50,
+            "bread": 2.60,
+            "eggs": 2.10,
+            "rice": 4.10,
+            "chicken": 4.00,
+            "apples": 2.10,
+            "groundBeef": 4.80
+        },
+
+        "2026": {
+            "milk": 5.20,
+            "bread": 4.00,
+            "eggs": 5.70,
+            "rice": 7.40,
+            "chicken": 7.10,
+            "apples": 3.90,
+            "groundBeef": 9.40
+        }
+    }
+}
