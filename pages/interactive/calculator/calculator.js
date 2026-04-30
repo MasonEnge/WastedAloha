@@ -81,14 +81,14 @@ function calculateCartOverTime() {
 
     document.getElementById("results").style.display = "block";
 
-    drawChart(years, totals);
+    drawChart(years, totals, state);
 }
 
 /* -------------------------
    CHART RENDERING
 --------------------------*/
 
-function drawChart(labels, data) {
+function drawChart(labels, data, state) {
 
     const ctx = document.getElementById("priceChart");
 
@@ -102,7 +102,7 @@ function drawChart(labels, data) {
         data: {
             labels: labels,
             datasets: [{
-                label: "Total Cart Cost ($)",
+                label: `Total Cart Cost for ${state} (USD)`,
                 data: data,
 
                 borderColor: "#d32f2f",
@@ -188,7 +188,7 @@ function drawChart(labels, data) {
 
                 y: {
                     grid: {
-                        color: "rgba(0,0,0,0.08)"
+                        color: "rgba(0,0,0,0.16)"
                     },
 
                     ticks: {

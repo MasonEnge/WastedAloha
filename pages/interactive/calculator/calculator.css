@@ -1,14 +1,33 @@
 .calculator-container {
-    max-width: 800px;
+    max-width: 1100px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
+/* -------------------------
+   TWO COLUMN LAYOUT
+--------------------------*/
+
+.calculator-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+/* LEFT SIDE */
 .calculator-form {
+    flex: 1;
+    min-width: 320px;
+
     background-color: #f5f5f5;
     padding: 30px;
     border-radius: 10px;
-    margin-bottom: 40px;
+}
+
+/* RIGHT SIDE */
+.calculator-results {
+    flex: 1;
+    min-width: 320px;
 }
 
 /* -------------------------
@@ -30,65 +49,57 @@
 
 .form-group select,
 .cart-item input {
-    padding: 12px;
+    padding: 8px;
     border: 2px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
     background-color: white;
 }
 
+h3 {
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #1b5e20;
+    font-size: 1.1rem;
+}
+
 /* -------------------------
-   CART (CLEAN LIST STYLE)
+   CART
 --------------------------*/
 
 .cart-list {
     display: flex;
     flex-direction: column;
-
-    /* requested spacing between items */
     gap: 5px;
-
     margin-top: 10px;
-
     font-family: "Courier New", monospace;
 }
 
-/* each row */
 .cart-item {
     display: flex;
     flex-direction: row;
-    align-items: center;   /* vertical centering */
-    justify-content: flex-start;
-
-    gap: 12px; /* space between input and label */
+    align-items: center;
+    gap: 12px;
     padding: 4px 0;
 }
 
-/* input FIRST (as you specified) */
 .cart-item input {
     width: 60px;
     text-align: right;
-
-    background-color: white;
-
-    /* ensures vertical centering consistency */
     margin: 0;
+    background-color: white;
 }
 
-/* remove spinner arrows */
 .cart-item input::-webkit-outer-spin-button,
 .cart-item input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* label AFTER input */
 .cart-item label {
     margin: 0;
     font-weight: bold;
     color: #1b5e20;
-
-    /* ensures perfect vertical alignment */
     display: flex;
     align-items: center;
 }
@@ -137,12 +148,7 @@ button:hover {
     flex-direction: column;
     align-items: center;
 
-    background: linear-gradient(
-        135deg,
-        #1b5e20 0%,
-        #2e7d32 100%
-    );
-
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
     color: white;
     padding: 40px;
     border-radius: 10px;
@@ -154,11 +160,24 @@ button:hover {
    CHART
 --------------------------*/
 
+.result-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
 #priceChart {
     width: 100%;
-    height: 800px;
-    max-height: 800px;
-
+    height: 600px;
     background-color: white;
     display: block;
+}
+
+/* -------------------------
+   MOBILE FALLBACK
+--------------------------*/
+
+@media (max-width: 900px) {
+    .calculator-layout {
+        flex-direction: column;
+    }
 }
