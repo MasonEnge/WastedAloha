@@ -12,6 +12,7 @@
     padding: 30px;
     border-radius: 10px;
     margin-bottom: 40px;
+    flex: 1;
 }
 
 /* -------------------------
@@ -128,6 +129,7 @@ button:hover {
 
 .calculator-results {
     animation: slideIn 0.5s ease;
+    flex: 3;
 }
 
 @keyframes slideIn {
