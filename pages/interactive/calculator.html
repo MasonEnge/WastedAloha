@@ -47,79 +47,76 @@
 
     <div class="calculator-container">
 
-        <div class="calculator-layout">
+        <form class="calculator-form">
 
-            <!-- LEFT: FORM -->
-            <form class="calculator-form">
+            <!-- STATE -->
+            <div class="form-group">
+                <label for="state">🌎 State / Territory</label>
 
-                <div class="form-group">
-                    <label for="state">🌎 State / Territory</label>
+                <select id="state">
+                    <option value="">Select a state...</option>
+                </select>
+            </div>
 
-                    <select id="state">
-                        <option value="">Select a state...</option>
-                    </select>
+            <hr>
+
+            <h3>🛒 Grocery Cart</h3>
+
+            <!-- ITEMS -->
+            <div class="cart-list">
+
+                <div class="cart-item">
+                    <input type="number" id="milkQty" min="0" value="0">
+                    <label for="milkQty">gallons of milk</label>
                 </div>
 
-                <hr>
-
-                <h3>🛒 Grocery Cart</h3>
-
-                <div class="cart-list">
-
-                    <div class="cart-item">
-                        <input type="number" id="milkQty" min="0" value="0">
-                        <label for="milkQty">gallons of milk</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="breadQty" min="0" value="0">
-                        <label for="breadQty">loaves of bread</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="eggsQty" min="0" value="0">
-                        <label for="eggsQty">dozen eggs</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="riceQty" min="0" value="0">
-                        <label for="riceQty">lbs of rice</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="applesQty" min="0" value="0">
-                        <label for="applesQty">lbs of apples</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="chickenQty" min="0" value="0">
-                        <label for="chickenQty">lbs of chicken</label>
-                    </div>
-
-                    <div class="cart-item">
-                        <input type="number" id="groundBeefQty" min="0" value="0">
-                        <label for="groundBeefQty">lbs of ground beef</label>
-                    </div>
-
+                <div class="cart-item">
+                    <input type="number" id="breadQty" min="0" value="0">
+                    <label for="breadQty">loaves of bread</label>
                 </div>
 
-                <button type="button" id="calculateBtn">
-                    Calculate Cart Price
-                </button>
+                <div class="cart-item">
+                    <input type="number" id="eggsQty" min="0" value="0">
+                    <label for="eggsQty">dozen eggs</label>
+                </div>
 
-            </form>
+                <div class="cart-item">
+                    <input type="number" id="riceQty" min="0" value="0">
+                    <label for="riceQty">lbs of rice</label>
+                </div>
 
-            <!-- RIGHT: CHART -->
-            <div id="results" class="calculator-results" style="display: none;">
+                <div class="cart-item">
+                    <input type="number" id="applesQty" min="0" value="0">
+                    <label for="applesQty">lbs of apples</label>
+                </div>
 
-                <div class="result-card">
+                <div class="cart-item">
+                    <input type="number" id="chickenQty" min="0" value="0">
+                    <label for="chickenQty">lbs of chicken</label>
+                </div>
 
-                    <div class="result-icon">📈 Cart Price Over Time</div>
+                <div class="cart-item">
+                    <input type="number" id="groundBeefQty" min="0" value="0">
+                    <label for="groundBeefQty">lbs of ground beef</label>
+                </div>
 
-                    <div class="result-content">
-                        <canvas id="priceChart"></canvas>
-                    </div>
+            </div>
 
+            <button type="button" id="calculateBtn">
+                Calculate Cart Price
+            </button>
+
+        </form>
+
+        <!-- RESULTS -->
+        <div id="results" class="calculator-results" style="display: none;">
+
+            <div class="result-card">
+
+                <div class="result-icon">📈 Cart Price Over Time</div>
+
+                <div class="result-content">
+                    <canvas id="priceChart"></canvas>
                 </div>
 
             </div>

@@ -1,86 +1,179 @@
-/* -------------------------
-   TWO COLUMN LAYOUT
---------------------------*/
-
-.calculator-layout {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    align-items: stretch;
+.section {
+    max-width: 1400px;
 }
 
-/* LEFT SIDE */
+.calculator-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
 .calculator-form {
-    flex: 1;
-    min-width: 320px;
     background-color: #f5f5f5;
     padding: 30px;
     border-radius: 10px;
-}
-
-/* RIGHT SIDE */
-.calculator-results {
-    flex: 1;
-    min-width: 320px;
-
-    display: flex;
-    flex-direction: column;
-
-    /* 🔥 CRITICAL FIX */
-    min-height: 600px;
+    margin-bottom: 40px;
 }
 
 /* -------------------------
-   RESULT CARD (IMPORTANT FIX)
+   FORM ELEMENTS
 --------------------------*/
 
-.result-card {
-    flex: 1;
+.form-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #1b5e20;
+    font-size: 1.1rem;
+}
+
+.form-group select,
+.cart-item input {
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: white;
+}
+
+h3 {
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #1b5e20;
+    font-size: 1.1rem;
+}
+/* -------------------------
+   CART (CLEAN LIST STYLE)
+--------------------------*/
+
+.cart-list {
     display: flex;
     flex-direction: column;
 
-    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-    color: white;
+    /* requested spacing between items */
+    gap: 5px;
 
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+    margin-top: 10px;
 
-    text-align: center;
-
-    height: 100%;
+    font-family: "Courier New", monospace;
 }
 
-/* -------------------------
-   CHART FIX
---------------------------*/
+/* each row */
+.cart-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;   /* vertical centering */
+    justify-content: flex-start;
 
-.result-content {
-    flex: 1;     
+    gap: 12px; /* space between input and label */
+    padding: 4px 0;
+}
+
+/* input FIRST (as you specified) */
+.cart-item input {
+    width: 60px;
+    text-align: right;
+
+    background-color: white;
+
+    /* ensures vertical centering consistency */
+    margin: 0;
+}
+
+/* remove spinner arrows */
+.cart-item input::-webkit-outer-spin-button,
+.cart-item input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* label AFTER input */
+.cart-item label {
+    margin: 0;
+    font-weight: bold;
+    color: #1b5e20;
+
+    /* ensures perfect vertical alignment */
     display: flex;
     align-items: center;
-    justify-content: center;
+}
+
+/* -------------------------
+   BUTTON
+--------------------------*/
+
+button {
+    margin-top: 30px;
+    padding: 14px 20px;
+    background-color: #1b5e20;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #2e7d32;
+}
+
+/* -------------------------
+   RESULTS + CHART
+--------------------------*/
+
+.calculator-results {
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: linear-gradient(
+        135deg,
+        #1b5e20 0%,
+        #2e7d32 100%
+    );
+
+    color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+    text-align: center;
+}
+
+/* -------------------------
+   CHART
+--------------------------*/
+
+.result-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
 }
 
 #priceChart {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 500px;
+    width: 100%;
+    height: 600px;
+    max-height: 800px;
 
     background-color: white;
     display: block;
-}
-
-/* -------------------------
-   MOBILE
---------------------------*/
-
-@media (max-width: 900px) {
-    .calculator-layout {
-        flex-direction: column;
-    }
-
-    .calculator-results {
-        min-height: 400px;
-    }
 }
