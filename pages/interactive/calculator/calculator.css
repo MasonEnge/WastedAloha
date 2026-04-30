@@ -1,24 +1,18 @@
-.calculator-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
 /* -------------------------
    TWO COLUMN LAYOUT
 --------------------------*/
 
 .calculator-layout {
     display: flex;
+    flex-direction: row;
     gap: 30px;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
 /* LEFT SIDE */
 .calculator-form {
     flex: 1;
     min-width: 320px;
-
     background-color: #f5f5f5;
     padding: 30px;
     border-radius: 10px;
@@ -28,156 +22,65 @@
 .calculator-results {
     flex: 1;
     min-width: 320px;
-}
 
-/* -------------------------
-   FORM ELEMENTS
---------------------------*/
-
-.form-group {
-    margin-bottom: 25px;
     display: flex;
     flex-direction: column;
-}
 
-.form-group label {
-    font-weight: bold;
-    margin-bottom: 12px;
-    color: #1b5e20;
-    font-size: 1.1rem;
-}
-
-.form-group select,
-.cart-item input {
-    padding: 8px;
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: white;
-}
-
-h3 {
-    font-weight: bold;
-    margin-bottom: 12px;
-    color: #1b5e20;
-    font-size: 1.1rem;
+    /* 🔥 CRITICAL FIX */
+    min-height: 600px;
 }
 
 /* -------------------------
-   CART
+   RESULT CARD (IMPORTANT FIX)
 --------------------------*/
-
-.cart-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-top: 10px;
-    font-family: "Courier New", monospace;
-}
-
-.cart-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 12px;
-    padding: 4px 0;
-}
-
-.cart-item input {
-    width: 60px;
-    text-align: right;
-    margin: 0;
-    background-color: white;
-}
-
-.cart-item input::-webkit-outer-spin-button,
-.cart-item input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.cart-item label {
-    margin: 0;
-    font-weight: bold;
-    color: #1b5e20;
-    display: flex;
-    align-items: center;
-}
-
-/* -------------------------
-   BUTTON
---------------------------*/
-
-button {
-    margin-top: 30px;
-    padding: 14px 20px;
-    background-color: #1b5e20;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    background-color: #2e7d32;
-}
-
-/* -------------------------
-   RESULTS + CHART
---------------------------*/
-
-.calculator-results {
-    animation: slideIn 0.5s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
 .result-card {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
     color: white;
-    padding: 40px;
+
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(27, 94, 32, 0.3);
+
     text-align: center;
+
+    height: 100%;
 }
 
 /* -------------------------
-   CHART
+   CHART FIX
 --------------------------*/
 
-.result-icon {
-    font-size: 3rem;
-    margin-bottom: 15px;
+.result-content {
+    flex: 1;     
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #priceChart {
-    width: 100%;
-    height: 600px;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 500px;
+
     background-color: white;
     display: block;
 }
 
 /* -------------------------
-   MOBILE FALLBACK
+   MOBILE
 --------------------------*/
 
 @media (max-width: 900px) {
     .calculator-layout {
         flex-direction: column;
+    }
+
+    .calculator-results {
+        min-height: 400px;
     }
 }
