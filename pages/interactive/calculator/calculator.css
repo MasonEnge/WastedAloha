@@ -3,7 +3,7 @@
 }
 
 .calculator-container {
-    flex: content;
+    display: flex;
     flex-direction: row;
 }
 
