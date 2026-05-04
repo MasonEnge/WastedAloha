@@ -1,4 +1,6 @@
-let groceryData = {};
+let hawaiiGroceries2026 = {};
+let hawaiiCPI = {};
+let usCPI = {};
 let chartInstance = null;
 
 /* -------------------------
@@ -6,46 +8,22 @@ let chartInstance = null;
 --------------------------*/
 
 async function loadData() {
+    const [groceryRes, hiRes, usRes] = await Promise.all([
+        fetch("/WastedAloha/pages/interactive/calculator/hawaii_groceries_2026.json"),
+        fetch("/WastedAloha/pages/interactive/calculator/hawaii_cpi.json"),
+        fetch("/WastedAloha/pages/interactive/calculator/us_city_avg_cpi.json")
+    ]);
 
-    const response = await fetch(
-        "/WastedAloha/pages/interactive/calculator/calculator_data.json"
-    );
-
-    groceryData = await response.json();
-
-    populateStates();
+    hawaiiGroceries2026 = await groceryRes.json();
+    hawaiiCPI = await hiRes.json();
+    usCPI = await usRes.json();
 }
 
 /* -------------------------
-   POPULATE STATES
---------------------------*/
-
-function populateStates() {
-
-    const stateSelect = document.getElementById("state");
-
-    Object.keys(groceryData).forEach(state => {
-
-        const option = document.createElement("option");
-        option.value = state;
-        option.textContent = state;
-
-        stateSelect.appendChild(option);
-    });
-}
-
-/* -------------------------
-   CALCULATE ACROSS YEARS
+   CALCULATE CART OVER TIME
 --------------------------*/
 
 function calculateCartOverTime() {
-
-    const state = document.getElementById("state").value;
-
-    if (!state || !groceryData[state]) {
-        alert("Please select a state.");
-        return;
-    }
 
     const items = [
         "milk",
@@ -57,38 +35,54 @@ function calculateCartOverTime() {
         "groundBeef"
     ];
 
-    const years = Object.keys(groceryData[state]).sort();
-    const totals = [];
+    const years = Object.keys(hawaiiCPI)
+        .map(y => parseInt(y))
+        .sort((a, b) => a - b);
+
+    const baseYear = 2026;
+    const baseCPI_HI = hawaiiCPI[baseYear];
+    const baseCPI_US = usCPI[baseYear];
+
+    let labels = [];
+    let hawaiiSeries = [];
+    let usSeries = [];
 
     years.forEach(year => {
 
-        const prices = groceryData[state][year];
+        labels.push(year);
 
-        let total = 0;
+        let hiTotal = 0;
+        let usTotal = 0;
 
         items.forEach(item => {
 
             const qty =
                 parseInt(document.getElementById(`${item}Qty`)?.value) || 0;
 
-            if (prices[item] !== undefined) {
-                total += qty * prices[item];
-            }
+            const basePrice = hawaiiGroceries2026[item];
+
+            // inflation adjustment factors
+            const hiFactor = hawaiiCPI[year] / baseCPI_HI;
+            const usFactor = usCPI[year] / baseCPI_US;
+
+            hiTotal += qty * basePrice * hiFactor;
+            usTotal += qty * basePrice * usFactor;
         });
 
-        totals.push(total);
+        hawaiiSeries.push(hiTotal);
+        usSeries.push(usTotal);
     });
 
     document.getElementById("results").style.display = "block";
 
-    drawChart(years, totals, state);
+    drawChart(labels, hawaiiSeries, usSeries);
 }
 
 /* -------------------------
-   CHART RENDERING
+   CHART
 --------------------------*/
 
-function drawChart(labels, data, state) {
+function drawChart(labels, hawaiiData, usData) {
 
     const ctx = document.getElementById("priceChart");
 
@@ -98,22 +92,26 @@ function drawChart(labels, data, state) {
 
     chartInstance = new Chart(ctx, {
         type: "line",
-
         data: {
             labels: labels,
-            datasets: [{
-                label: `Total Cart Cost for ${state} (USD)`,
-                data: data,
-
-                borderColor: "#d32f2f",
-                borderWidth: 3,
-
-                pointRadius: 4,
-                pointHoverRadius: 7,
-                pointBackgroundColor: "#d32f2f",
-
-                tension: 0
-            }]
+            datasets: [
+                {
+                    label: "Hawaii (inflation-adjusted)",
+                    data: hawaiiData,
+                    borderColor: "#d32f2f",
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    tension: 0.2
+                },
+                {
+                    label: "US City Average (inflation-adjusted)",
+                    data: usData,
+                    borderColor: "#1565c0",
+                    borderWidth: 3,
+                    pointRadius: 3,
+                    tension: 0.2
+                }
+            ]
         },
 
         options: {
@@ -121,102 +119,28 @@ function drawChart(labels, data, state) {
             maintainAspectRatio: false,
 
             plugins: {
-
                 legend: {
                     labels: {
-                        color: "#000",
                         font: {
-                            size: 14,
-                            family: "Cambria Math, 'Times New Roman', serif"
-                        }
-                    }
-                },
-
-                tooltip: {
-                    backgroundColor: "#fff",
-                    titleColor: "#000",
-                    bodyColor: "#000",
-
-                    titleFont: {
-                        size: 14,
-                        family: "Cambria Math, 'Times New Roman', serif"
-                    },
-
-                    bodyFont: {
-                        size: 13,
-                        family: "Cambria Math, 'Times New Roman', serif"
-                    },
-
-                    callbacks: {
-                        label: function(context) {
-                            return "Total: $" + context.raw.toFixed(2);
+                            size: 13
                         }
                     }
                 }
             },
 
             scales: {
-
                 x: {
-                    grid: {
-                        display: false
-                    },
-
-                    ticks: {
-                        color: "#000",
-                        maxRotation: 45,
-                        minRotation: 45,
-
-                        font: {
-                            size: 12,
-                            family: "Cambria Math, 'Times New Roman', serif"
-                        }
-                    },
-
                     title: {
                         display: true,
-                        text: "Year",
-                        color: "#000",
-
-                        font: {
-                            size: 14,
-                            family: "Cambria Math, 'Times New Roman', serif",
-                            weight: "bold"
-                        }
+                        text: "Year"
                     }
                 },
-
                 y: {
-                    grid: {
-                        color: "rgba(0,0,0,0.16)"
-                    },
-
-                    ticks: {
-                        color: "#000",
-
-                        font: {
-                            size: 12,
-                            family: "Cambria Math, 'Times New Roman', serif"
-                        },
-
-                        callback: function(value) {
-                            return "$" + value.toFixed(2);
-                        }
-                    },
-
-                    beginAtZero: true,
-
                     title: {
                         display: true,
-                        text: "Total Cart Cost (USD)",
-                        color: "#000",
-
-                        font: {
-                            size: 14,
-                            family: "Cambria Math, 'Times New Roman', serif",
-                            weight: "bold"
-                        }
-                    }
+                        text: "Estimated Cart Cost (USD)"
+                    },
+                    beginAtZero: false
                 }
             }
         }
