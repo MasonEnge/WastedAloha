@@ -1,6 +1,6 @@
 let cart2026 = {};
 let hawaiiCPI = {};
-let usCPI = {};
+let usCartData = {};
 let chartInstance = null;
 
 /* -------------------------
@@ -8,7 +8,6 @@ let chartInstance = null;
 --------------------------*/
 
 function normalizeCPI(obj) {
-    // Converts { "1984": 103.7 } → { 1984: 103.7 }
     const out = {};
     for (const [year, value] of Object.entries(obj)) {
         const y = Number(year);
@@ -22,15 +21,15 @@ function normalizeCPI(obj) {
 
 async function loadData() {
 
-    const [cartRes, hawaiiRes, usRes] = await Promise.all([
+    const [cartRes, hawaiiRes, usCartRes] = await Promise.all([
         fetch("/WastedAloha/pages/interactive/calculator/hawaii_groceries_2026.json"),
         fetch("/WastedAloha/pages/interactive/calculator/hawaii_cpi.json"),
-        fetch("/WastedAloha/pages/interactive/calculator/us_city_avg_cpi.json")
+        fetch("/WastedAloha/pages/interactive/calculator/us_city_groceries.json")
     ]);
 
     cart2026 = await cartRes.json();
     hawaiiCPI = normalizeCPI(await hawaiiRes.json());
-    usCPI = normalizeCPI(await usRes.json());
+    usCartData = await usCartRes.json(); // <-- direct cart values now
 }
 
 /* -------------------------
@@ -64,10 +63,9 @@ function calculateCartOverTime() {
         .map(Number)
         .sort((a, b) => a - b);
 
-    const hawaii2026 = hawaiiCPI[2025]; // last full year before 2026
-    const us2026 = usCPI[2025];
+    const hawaii2026 = hawaiiCPI[2025]; // baseline stays unchanged
 
-    if (!hawaii2026 || !us2026) {
+    if (!hawaii2026) {
         alert("Missing 2025 CPI baseline values.");
         return;
     }
@@ -78,15 +76,17 @@ function calculateCartOverTime() {
     for (const year of years) {
 
         const hVal = hawaiiCPI[year];
-        const uVal = usCPI[year];
 
-        // CPI-indexed scaling (2025 = baseline)
+        // Hawaii stays CPI-scaled (UNCHANGED)
         const hawaiiCart = hVal
             ? baseCart * (hVal / hawaii2026)
             : null;
 
-        const usCart = uVal
-            ? baseCart * (uVal / us2026)
+        // US now uses direct cart values (NO CPI SCALING)
+        const usVal = usCartData?.[year];
+
+        const usCart = usVal != null
+            ? usVal
             : null;
 
         hawaiiSeries.push(hawaiiCart);
@@ -174,7 +174,7 @@ function drawChart(labels, hawaiiData, usData) {
 
                     title: {
                         display: true,
-                        text: "Cart Cost (Inflation Adjusted)"
+                        text: "Cart Cost"
                     }
                 }
             }
