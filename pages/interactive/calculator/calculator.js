@@ -29,7 +29,7 @@ async function loadData() {
 
     cart2026 = await cartRes.json();
     hawaiiCPI = normalizeCPI(await hawaiiRes.json());
-    usCartData = await usCartRes.json(); // <-- direct cart values now
+    usCartData = await usCartRes.json(); // structure: item -> year -> {value, interpolated}
 }
 
 /* -------------------------
@@ -41,7 +41,6 @@ function getBaseCartTotal() {
     let total = 0;
 
     for (const item in cart2026) {
-
         const qty =
             parseFloat(document.getElementById(item + "Qty")?.value) || 0;
 
@@ -49,6 +48,31 @@ function getBaseCartTotal() {
     }
 
     return total;
+}
+
+/* -------------------------
+   US CART CALC (NEW LOGIC)
+--------------------------*/
+
+function getUSCartForYear(year, quantities) {
+
+    let total = 0;
+    let interpolated = false;
+
+    for (const item in quantities) {
+
+        const itemData = usCartData?.[item]?.[year];
+
+        if (!itemData) continue;
+
+        total += quantities[item] * itemData.value;
+
+        if (itemData.interpolated) {
+            interpolated = true;
+        }
+    }
+
+    return { total, interpolated };
 }
 
 /* -------------------------
@@ -63,9 +87,9 @@ function calculateCartOverTime() {
         .map(Number)
         .sort((a, b) => a - b);
 
-    const hawaii2026 = hawaiiCPI[2025]; // baseline stays unchanged
+    const hawaii2025 = hawaiiCPI[2025];
 
-    if (!hawaii2026) {
+    if (!hawaii2025) {
         alert("Missing 2025 CPI baseline values.");
         return;
     }
@@ -75,22 +99,24 @@ function calculateCartOverTime() {
 
     for (const year of years) {
 
+        /* ---------------- HAWAII (UNCHANGED CPI SCALING) ---------------- */
         const hVal = hawaiiCPI[year];
 
-        // Hawaii stays CPI-scaled (UNCHANGED)
         const hawaiiCart = hVal
-            ? baseCart * (hVal / hawaii2026)
-            : null;
-
-        // US now uses direct cart values (NO CPI SCALING)
-        const usVal = usCartData?.[year];
-
-        const usCart = usVal != null
-            ? usVal
+            ? baseCart * (hVal / hawaii2025)
             : null;
 
         hawaiiSeries.push(hawaiiCart);
-        usSeries.push(usCart);
+
+        /* ---------------- US (NEW DIRECT CART DATA) ---------------- */
+
+        const us = getUSCartForYear(year, cart2026);
+
+        usSeries.push(
+            us.total != null
+                ? { x: year, y: us.total, interpolated: us.interpolated }
+                : { x: year, y: null, interpolated: false }
+        );
     }
 
     document.getElementById("results").style.display = "block";
@@ -123,14 +149,28 @@ function drawChart(labels, hawaiiData, usData) {
                     data: hawaiiData,
                     borderColor: "#d32f2f",
                     borderWidth: 3,
-                    tension: 0
+                    tension: 0,
+                    pointStyle: "circle"
                 },
                 {
                     label: "US City Average Cart",
                     data: usData,
                     borderColor: "#1976d2",
                     borderWidth: 3,
-                    tension: 0
+                    tension: 0,
+
+                    parsing: {
+                        xAxisKey: "x",
+                        yAxisKey: "y"
+                    },
+
+                    spanGaps: true,
+
+                    pointStyle: (ctx) => {
+                        const raw = ctx.raw;
+                        if (raw && raw.interpolated) return "triangle";
+                        return "circle";
+                    }
                 }
             ]
         },
@@ -140,10 +180,26 @@ function drawChart(labels, hawaiiData, usData) {
             maintainAspectRatio: false,
 
             plugins: {
+
                 legend: {
                     labels: {
+
                         color: "#000",
-                        font: { size: 14 }
+                        font: { size: 14 },
+
+                        generateLabels(chart) {
+
+                            const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+
+                            original.push({
+                                text: "Triangle = interpolated data",
+                                fillStyle: "#000",
+                                strokeStyle: "#000",
+                                pointStyle: "triangle"
+                            });
+
+                            return original;
+                        }
                     }
                 },
 
@@ -151,7 +207,7 @@ function drawChart(labels, hawaiiData, usData) {
                     callbacks: {
                         label: function (context) {
                             if (context.raw == null) return "No data";
-                            return "$" + context.raw.toFixed(2);
+                            return "$" + context.raw.y.toFixed(2);
                         }
                     }
                 }
