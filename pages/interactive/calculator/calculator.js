@@ -1,6 +1,6 @@
 let cart2026 = {};
-let hawaiiCPI = [];
-let usCPI = [];
+let hawaiiCPI = {};
+let usCPI = {};
 let chartInstance = null;
 
 /* -------------------------
@@ -8,10 +8,16 @@ let chartInstance = null;
 --------------------------*/
 
 function normalizeCPI(obj) {
-    return Object.entries(obj).map(([year, value]) => ({
-        year: Number(year),
-        value: Number(value)
-    }));
+    // Converts { "1984": 103.7 } → { 1984: 103.7 }
+    const out = {};
+    for (const [year, value] of Object.entries(obj)) {
+        const y = Number(year);
+        const v = Number(value);
+        if (!isNaN(y) && !isNaN(v)) {
+            out[y] = v;
+        }
+    }
+    return out;
 }
 
 async function loadData() {
@@ -23,7 +29,6 @@ async function loadData() {
     ]);
 
     cart2026 = await cartRes.json();
-
     hawaiiCPI = normalizeCPI(await hawaiiRes.json());
     usCPI = normalizeCPI(await usRes.json());
 }
@@ -55,31 +60,38 @@ function calculateCartOverTime() {
 
     const baseCart = getBaseCartTotal();
 
-    const hawaii2025 = hawaiiCPI.find(d => d.year === 2025)?.value;
-    const us2025 = usCPI.find(d => d.year === 2025)?.value;
+    const years = Object.keys(hawaiiCPI)
+        .map(Number)
+        .sort((a, b) => a - b);
 
-    if (!hawaii2025 || !us2025) {
+    const hawaii2026 = hawaiiCPI[2025]; // last full year before 2026
+    const us2026 = usCPI[2025];
+
+    if (!hawaii2026 || !us2026) {
         alert("Missing 2025 CPI baseline values.");
         return;
     }
 
-    const years = hawaiiCPI.map(d => d.year);
+    const hawaiiSeries = [];
+    const usSeries = [];
 
-    const hawaiiSeries = years.map(year => {
+    for (const year of years) {
 
-        const entry = hawaiiCPI.find(d => d.year === year);
-        if (!entry) return null;
+        const hVal = hawaiiCPI[year];
+        const uVal = usCPI[year];
 
-        return baseCart * (entry.value / hawaii2025);
-    });
+        // CPI-indexed scaling (2025 = baseline)
+        const hawaiiCart = hVal
+            ? baseCart * (hVal / hawaii2026)
+            : null;
 
-    const usSeries = years.map(year => {
+        const usCart = uVal
+            ? baseCart * (uVal / us2026)
+            : null;
 
-        const entry = usCPI.find(d => d.year === year);
-        if (!entry) return null;
-
-        return baseCart * (entry.value / us2025);
-    });
+        hawaiiSeries.push(hawaiiCart);
+        usSeries.push(usCart);
+    }
 
     document.getElementById("results").style.display = "block";
 
@@ -131,15 +143,14 @@ function drawChart(labels, hawaiiData, usData) {
                 legend: {
                     labels: {
                         color: "#000",
-                        font: {
-                            size: 14
-                        }
+                        font: { size: 14 }
                     }
                 },
 
                 tooltip: {
                     callbacks: {
                         label: function (context) {
+                            if (context.raw == null) return "No data";
                             return "$" + context.raw.toFixed(2);
                         }
                     }
