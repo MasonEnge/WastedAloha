@@ -29,50 +29,40 @@ async function loadData() {
 
     cart2026 = await cartRes.json();
     hawaiiCPI = normalizeCPI(await hawaiiRes.json());
-    usCartData = await usCartRes.json(); // structure: item -> year -> {value, interpolated}
+    usCartData = await usCartRes.json();
 }
 
 /* -------------------------
-   CART TOTAL (2026 BASE)
+   READ USER INPUTS (IMPORTANT FIX)
 --------------------------*/
 
-function getBaseCartTotal() {
+function getQuantitiesFromForm() {
 
-    let total = 0;
+    const quantities = {};
 
     for (const item in cart2026) {
         const qty =
             parseFloat(document.getElementById(item + "Qty")?.value) || 0;
 
-        total += qty * cart2026[item];
+        quantities[item] = qty;
     }
 
-    return total;
+    return quantities;
 }
 
 /* -------------------------
-   US CART CALC (NEW LOGIC)
+   CART TOTAL (2026 BASE - HAWAII)
 --------------------------*/
 
-function getUSCartForYear(year, quantities) {
+function getBaseCartTotal(quantities) {
 
     let total = 0;
-    let interpolated = false;
 
     for (const item in quantities) {
-
-        const itemData = usCartData?.[item]?.[year];
-
-        if (!itemData) continue;
-
-        total += quantities[item] * itemData.value;
-
-        if (itemData.interpolated) {
-            interpolated = true;
-        }
+        total += quantities[item] * cart2026[item];
     }
 
-    return { total, interpolated };
+    return total;
 }
 
 /* -------------------------
@@ -81,7 +71,9 @@ function getUSCartForYear(year, quantities) {
 
 function calculateCartOverTime() {
 
-    const baseCart = getBaseCartTotal();
+    const quantities = getQuantitiesFromForm();
+
+    const baseCart = getBaseCartTotal(quantities);
 
     const years = Object.keys(hawaiiCPI)
         .map(Number)
@@ -108,13 +100,31 @@ function calculateCartOverTime() {
 
         hawaiiSeries.push(hawaiiCart);
 
-        /* ---------------- US (NEW DIRECT CART DATA) ---------------- */
+        /* ---------------- US (NOW CORRECT: USE SAME QUANTITIES) ---------------- */
 
-        const us = getUSCartForYear(year, cart2026);
+        let usTotal = 0;
+        let hasData = false;
+        let interpolated = false;
+
+        for (const item in quantities) {
+
+            const qty = quantities[item];
+
+            const itemData = usCartData?.[item]?.[year];
+
+            if (!itemData) continue;
+
+            usTotal += qty * itemData.value;
+            hasData = true;
+
+            if (itemData.interpolated) {
+                interpolated = true;
+            }
+        }
 
         usSeries.push(
-            us.total != null
-                ? { x: year, y: us.total, interpolated: us.interpolated }
+            hasData
+                ? { x: year, y: usTotal, interpolated }
                 : { x: year, y: null, interpolated: false }
         );
     }
@@ -189,7 +199,8 @@ function drawChart(labels, hawaiiData, usData) {
 
                         generateLabels(chart) {
 
-                            const original = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                            const original =
+                                Chart.defaults.plugins.legend.labels.generateLabels(chart);
 
                             original.push({
                                 text: "Triangle = interpolated data",
