@@ -7,6 +7,13 @@ let chartInstance = null;
    LOAD DATA
 --------------------------*/
 
+function normalizeCPI(obj) {
+    return Object.entries(obj).map(([year, value]) => ({
+        year: Number(year),
+        value: Number(value)
+    }));
+}
+
 async function loadData() {
 
     const [cartRes, hawaiiRes, usRes] = await Promise.all([
@@ -16,39 +23,13 @@ async function loadData() {
     ]);
 
     cart2026 = await cartRes.json();
-    hawaiiCPI = await hawaiiRes.json();
-    usCPI = await usRes.json();
+
+    hawaiiCPI = normalizeCPI(await hawaiiRes.json());
+    usCPI = normalizeCPI(await usRes.json());
 }
 
 /* -------------------------
-   HELPERS
---------------------------*/
-
-// Extract year from "YYYY-MM-DD"
-function getYear(dateStr) {
-    return parseInt(dateStr.split("-")[0]);
-}
-
-// Filter US CPI to yearly (January only)
-function processUSCPI(rawText) {
-
-    const lines = rawText.trim().split("\n").slice(1);
-
-    const data = lines
-        .map(line => {
-            const [date, value] = line.split(",");
-            return {
-                year: getYear(date),
-                value: parseFloat(value)
-            };
-        })
-        .filter(d => !isNaN(d.value));
-
-    return data.filter(d => d.year >= 1984);
-}
-
-/* -------------------------
-   CALCULATE BASE CART (2026)
+   CART TOTAL (2026 BASE)
 --------------------------*/
 
 function getBaseCartTotal() {
@@ -67,48 +48,7 @@ function getBaseCartTotal() {
 }
 
 /* -------------------------
-   BUILD CPI SERIES
---------------------------*/
-
-function buildSeries() {
-
-    const baseCart = getBaseCartTotal();
-
-    const hawaiiBase = hawaiiCPI["2025"] ?? Object.values(hawaiiCPI).at(-1);
-    const usRaw = processUSCPI(usCPIRawString); // we fix below
-
-    const years = [];
-    const hawaiiSeries = [];
-    const usSeries = [];
-
-    const hawaii2025 = hawaiiCPI.find(d => d.year === 2025)?.value;
-
-    const us2025 = usRaw.find(d => d.year === 2025)?.value;
-
-    for (const h of hawaiiCPI) {
-
-        const year = h.year;
-
-        const hawaiiValue =
-            baseCart * (h.value / hawaii2025);
-
-        const usValueObj = usRaw.find(d => d.year === year);
-
-        const usValue =
-            usValueObj
-                ? baseCart * (usValueObj.value / us2025)
-                : null;
-
-        years.push(year);
-        hawaiiSeries.push(hawaiiValue);
-        usSeries.push(usValue);
-    }
-
-    return { years, hawaiiSeries, usSeries };
-}
-
-/* -------------------------
-   MAIN CALC
+   MAIN CALCULATION
 --------------------------*/
 
 function calculateCartOverTime() {
@@ -116,20 +56,29 @@ function calculateCartOverTime() {
     const baseCart = getBaseCartTotal();
 
     const hawaii2025 = hawaiiCPI.find(d => d.year === 2025)?.value;
+    const us2025 = usCPI.find(d => d.year === 2025)?.value;
 
-    const usRaw = processUSCPI(usCPIRawString);
-    const us2025 = usRaw.find(d => d.year === 2025)?.value;
+    if (!hawaii2025 || !us2025) {
+        alert("Missing 2025 CPI baseline values.");
+        return;
+    }
 
     const years = hawaiiCPI.map(d => d.year);
 
-    const hawaiiSeries = years.map(y => {
-        const cpi = hawaiiCPI.find(d => d.year === y).value;
-        return baseCart * (cpi / hawaii2025);
+    const hawaiiSeries = years.map(year => {
+
+        const entry = hawaiiCPI.find(d => d.year === year);
+        if (!entry) return null;
+
+        return baseCart * (entry.value / hawaii2025);
     });
 
-    const usSeries = years.map(y => {
-        const cpi = usRaw.find(d => d.year === y)?.value;
-        return cpi ? baseCart * (cpi / us2025) : null;
+    const usSeries = years.map(year => {
+
+        const entry = usCPI.find(d => d.year === year);
+        if (!entry) return null;
+
+        return baseCart * (entry.value / us2025);
     });
 
     document.getElementById("results").style.display = "block";
@@ -138,14 +87,16 @@ function calculateCartOverTime() {
 }
 
 /* -------------------------
-   CHART
+   CHART RENDERING
 --------------------------*/
 
 function drawChart(labels, hawaiiData, usData) {
 
     const ctx = document.getElementById("priceChart");
 
-    if (chartInstance) chartInstance.destroy();
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
 
     chartInstance = new Chart(ctx, {
 
@@ -179,15 +130,40 @@ function drawChart(labels, hawaiiData, usData) {
             plugins: {
                 legend: {
                     labels: {
-                        color: "#000"
+                        color: "#000",
+                        font: {
+                            size: 14
+                        }
+                    }
+                },
+
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return "$" + context.raw.toFixed(2);
+                        }
                     }
                 }
             },
 
             scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Year"
+                    }
+                },
+
                 y: {
+                    beginAtZero: true,
+
                     ticks: {
                         callback: v => "$" + v.toFixed(2)
+                    },
+
+                    title: {
+                        display: true,
+                        text: "Cart Cost (Inflation Adjusted)"
                     }
                 }
             }
