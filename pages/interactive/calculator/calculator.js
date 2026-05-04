@@ -33,7 +33,7 @@ async function loadData() {
 }
 
 /* -------------------------
-   READ USER INPUTS (IMPORTANT FIX)
+   READ USER INPUTS
 --------------------------*/
 
 function getQuantitiesFromForm() {
@@ -51,7 +51,7 @@ function getQuantitiesFromForm() {
 }
 
 /* -------------------------
-   CART TOTAL (2026 BASE - HAWAII)
+   HAWAII BASE CART
 --------------------------*/
 
 function getBaseCartTotal(quantities) {
@@ -72,7 +72,6 @@ function getBaseCartTotal(quantities) {
 function calculateCartOverTime() {
 
     const quantities = getQuantitiesFromForm();
-
     const baseCart = getBaseCartTotal(quantities);
 
     const years = Object.keys(hawaiiCPI)
@@ -91,7 +90,7 @@ function calculateCartOverTime() {
 
     for (const year of years) {
 
-        /* ---------------- HAWAII (UNCHANGED CPI SCALING) ---------------- */
+        /* ---------------- HAWAII (UNCHANGED) ---------------- */
         const hVal = hawaiiCPI[year];
 
         const hawaiiCart = hVal
@@ -100,33 +99,37 @@ function calculateCartOverTime() {
 
         hawaiiSeries.push(hawaiiCart);
 
-        /* ---------------- US (NOW CORRECT: USE SAME QUANTITIES) ---------------- */
+        /* ---------------- US CART ---------------- */
 
         let usTotal = 0;
-        let hasData = false;
-        let interpolated = false;
+        let hasAnyData = false;
+        let hasInterpolatedContribution = false;
 
         for (const item in quantities) {
 
             const qty = quantities[item];
+            if (!qty || qty <= 0) continue; // IMPORTANT FIX
 
             const itemData = usCartData?.[item]?.[year];
-
             if (!itemData) continue;
 
-            usTotal += qty * itemData.value;
-            hasData = true;
+            hasAnyData = true;
 
+            usTotal += qty * itemData.value;
+
+            // ONLY mark interpolated if:
+            // - item contributes (qty > 0)
+            // - AND that year's data is interpolated
             if (itemData.interpolated) {
-                interpolated = true;
+                hasInterpolatedContribution = true;
             }
         }
 
-        usSeries.push(
-            hasData
-                ? { x: year, y: usTotal, interpolated }
-                : { x: year, y: null, interpolated: false }
-        );
+        usSeries.push({
+            x: year,
+            y: hasAnyData ? usTotal : null,
+            interpolated: hasInterpolatedContribution
+        });
     }
 
     document.getElementById("results").style.display = "block";
@@ -178,8 +181,7 @@ function drawChart(labels, hawaiiData, usData) {
 
                     pointStyle: (ctx) => {
                         const raw = ctx.raw;
-                        if (raw && raw.interpolated) return "triangle";
-                        return "circle";
+                        return raw?.interpolated ? "triangle" : "circle";
                     }
                 }
             ]
@@ -193,17 +195,15 @@ function drawChart(labels, hawaiiData, usData) {
 
                 legend: {
                     labels: {
-
                         color: "#000",
                         font: { size: 14 },
 
                         generateLabels(chart) {
-
                             const original =
                                 Chart.defaults.plugins.legend.labels.generateLabels(chart);
 
                             original.push({
-                                text: "Triangle = interpolated data",
+                                text: "Triangle = interpolated ingredient contribution",
                                 fillStyle: "#000",
                                 strokeStyle: "#000",
                                 pointStyle: "triangle"
@@ -217,7 +217,7 @@ function drawChart(labels, hawaiiData, usData) {
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            if (context.raw == null) return "No data";
+                            if (!context.raw || context.raw.y == null) return "No data";
                             return "$" + context.raw.y.toFixed(2);
                         }
                     }
