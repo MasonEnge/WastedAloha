@@ -203,7 +203,7 @@ function drawChart(labels, hawaiiData, usData) {
                                 Chart.defaults.plugins.legend.labels.generateLabels(chart);
 
                             original.push({
-                                text: "Triangle = interpolated ingredient contribution",
+                                text: "Triangle = interpolated ingredient contribution*",
                                 fillStyle: "#000",
                                 strokeStyle: "#000",
                                 pointStyle: "triangle"
