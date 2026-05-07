@@ -176,3 +176,49 @@ button:disabled {
 .zoom-out {
     margin-bottom: 10px;
 }
+
+/* Footer styling */
+.map-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(29, 26, 32, 0.95);
+    border-top: 1px solid #dcbfff;
+    padding: 1em;
+    font-size: 0.85em;
+    z-index: 10;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    color: #dcbfff;
+    font-weight: bold;
+    margin-bottom: 0.3em;
+}
+
+.footer-content ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-content li {
+    display: inline;
+    margin-right: 2em;
+}
+
+.footer-content a {
+    color: #c99aff;
+    text-decoration: none;
+    transition: 100ms;
+}
+
+.footer-content a:hover {
+    color: #dcbfff;
+    text-decoration: underline;
+}
