@@ -22,12 +22,12 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #555;
+    background: #66bb6a;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #dcbfff;
+    background: #1b5e20;
 }
 
 .world-map {
@@ -141,7 +141,7 @@ path:hover {
 }
 
 .side-panel strong {
-    color: #dcbfff;
+    color: #66bb6a;
 }
 
 .zoom-controls {
