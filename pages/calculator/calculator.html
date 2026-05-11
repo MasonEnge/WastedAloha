@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Food Waste Calculator | Wasted Aloha</title>
+
+    <link rel="stylesheet" href="/WastedAloha/css/home.css">
+    <link rel="stylesheet" href="/WastedAloha/pages/calculator/calculator.css">
+
+    <link rel="icon" type="image/svg+xml" href="/WastedAloha/assets/logo.svg">
+</head>
+
+<body>
+
+<header>
+    <div class="header-left">
+        <a href="/WastedAloha/index.html">
+            <img src="/WastedAloha/assets/logotext.svg"
+                 alt="Wasted Aloha Logo"
+                 class="logo">
+        </a>
+    </div>
+
+    <div class="header-right">
+        <nav class="header-nav">
+            <a href="/WastedAloha/index.html">Home</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero" id="home"></section>
+
+<section class="section">
+
+    <h2>Historical Grocery Calculator</h2>
+
+    <p>
+        Enter numbers in the fields below to build a grocery cart and see how costs have changed for Hawai'i residents over time. 
+    </p>
+    <p>
+        Click "Calculate Cart Price" to see the price of your cart, as well as predicted historical prices for Hawai'i based on urban Hawai'i's food CPI. The chart also features a comparison with the U.S. city average prices.
+    </p>
+
+    <hr>
+
+    <div class="calculator-container">
+
+        <form class="calculator-form">
+
+            <h3>🛒 Grocery Cart</h3>
+
+            <!-- ITEMS -->
+            <div class="cart-list">
+
+                <div class="cart-item">
+                    <input type="number" id="milkQty" min="0" value="0">
+                    <label for="milkQty">gallons of milk</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="breadQty" min="0" value="0">
+                    <label for="breadQty">loaves of white bread</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="eggsQty" min="0" value="0">
+                    <label for="eggsQty">dozen eggs</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="riceQty" min="0" value="0">
+                    <label for="riceQty">lbs of white rice</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="applesQty" min="0" value="0">
+                    <label for="applesQty">lbs of apples</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="chickenQty" min="0" value="0">
+                    <label for="chickenQty">lbs of chicken breast</label>
+                </div>
+
+                <div class="cart-item">
+                    <input type="number" id="beefQty" min="0" value="0">
+                    <label for="beefQty">lbs of ground beef</label>
+                </div>
+
+
+            </div>
+
+            <button type="button" id="calculateBtn">
+                Calculate Cart Price
+            </button>
+
+        </form>
+
+        <!-- RESULTS -->
+        <div id="results" class="calculator-results">
+
+            <div class="result-card">
+
+                <div class="result-icon">📈 Cart Price Over Time</div>
+
+                <div class="result-content">
+                    <canvas id="priceChart"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+</section>
+
+<section class="article-citations">
+    <h2>Data Sources &amp; Methodology</h2>
+
+  <p>
+    This visualization combines contemporary grocery pricing data with historical
+    consumer price index (CPI) records to estimate long-term food price trends
+    in Hawaiʻi and the United States.
+  </p>
+
+  <h3>Primary Sources</h3>
+  <ul>
+    <li>
+      <a href="https://worldpopulationreview.com/state-rankings/grocery-prices-by-state" target="_blank" rel="noopener noreferrer">
+        World Population Review – Grocery Prices by State (2026)
+      </a>
+      <br />
+      Used for contemporary average weekly grocery price comparisons by U.S. state.
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/CUUSA426SAF1" target="_blank" rel="noopener noreferrer">
+        FRED – CPI for Urban Hawaii (CUUSA426SAF1)
+      </a>
+      <br />
+      Used to estimate historical Hawaiʻi grocery prices from 1984–2025.
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/CPIUFDSL" target="_blank" rel="noopener noreferrer">
+        FRED – CPI for All Urban Consumers: U.S. City Average (CPIUFDSL)
+      </a>
+      <br />
+      Used to interpolate and normalize missing historical price values.
+    </li>
+  </ul>
+
+  <h3>Historical Food Price Series (FRED)</h3>
+  <p>
+    The following national average food price series were used as baseline
+    reference datasets:
+  </p>
+
+  <ul>
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000709112" target="_blank" rel="noopener noreferrer">
+        Average Price: Milk (APU0000709112)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000708111" target="_blank" rel="noopener noreferrer">
+        Average Price: Eggs (APU0000708111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000711111" target="_blank" rel="noopener noreferrer">
+        Average Price: Apples (APU0000711111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000702111" target="_blank" rel="noopener noreferrer">
+        Average Price: Bread (APU0000702111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000701312" target="_blank" rel="noopener noreferrer">
+        Average Price: Rice (APU0000701312)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000FF1101" target="_blank" rel="noopener noreferrer">
+        Average Price: Chicken (APU0000FF1101)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000703112" target="_blank" rel="noopener noreferrer">
+        Average Price: Ground Beef (APU0000703112)
+      </a>
+    </li>
+  </ul>
+
+  <h3>Notes</h3>
+  <p>
+    Historical Hawaiʻi estimates were derived by adjusting national food price
+    series using Hawaiʻi-specific CPI trends where direct state-level food price
+    data was unavailable. Interpolated values are estimates and should be
+    interpreted as approximations rather than exact historical market prices.
+  </p>
+    <p>Data on U.S. city average prices for certain years for certain products was not available. In these cases, the data was interpolated (estimated) using CPI data and prices from neighboring years. Years with interpolated data are indicated by triangular points on the graph.</p>
+    <p>Data for 2026 Hawai'i grocery prices was collected manually by this site's creators.</p>
+</section>
+
+<footer>
+    <p>
+        Wasted Aloha by Mason Engevold & Randy Pasion |
+        CS475/ART475 - Spring 2026 -
+        University of Hawaii at Hilo
+    </p>
+</footer>
+
+<script src="/WastedAloha/pages/calculator/js/calculator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
