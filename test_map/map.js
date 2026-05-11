@@ -228,7 +228,18 @@ const foodWasteData = {
     "UA": { perCapita: 69, annual: 2758037 },
     "AE": { perCapita: 99, annual: 930427 },
     "GB": { perCapita: 76, annual: 5097005 },
-    "US": { perCapita: 73, annual: 24716539 },
+    "US": {
+        breakdown: {
+            "Landfill": 22.6,
+            "Not Harvested": 14,
+            "Composting": 11.7,
+            "Land Application": 3.88,
+            "Sewer": 2.73,
+            "Incineration": 2.67,
+            "Anaerobic Digestion": 1.57,
+            "Dumping": 0.646
+        }
+    },
     "VI": { perCapita: 88, annual: 8802 },
     "UY": { perCapita: 88, annual: 301034 },
     "UZ": { perCapita: 86, annual: 2968299 },
@@ -249,20 +260,25 @@ countries.forEach(country => {
         console.log(classList);
 
         // Selector for matching classes
-        const selector = '.' + classList;
+        if (classList.trim() !== '') {
+            const selector = '.' + classList;
 
-        // Select all matching elements and pieces of land that belong to same country
-        const matchingElements = document.querySelectorAll(selector);
-        //
-        matchingElements.forEach(el => el.style.fill = "#c99aff");
+            // Select all matching elements and pieces of land that belong to same country
+            const matchingElements = document.querySelectorAll(selector);
+            //
+            matchingElements.forEach(el => el.style.fill = "#66bb6a");
+        }
     });
     // Event where cursor leaves a country
     country.addEventListener("mouseout", function() {
         // Remove hover effect from all pieces of land that have the same class names
-        const classList = [...this.classList].join('.')
-        const selector = '.' + classList;
-        const matchingElements = document.querySelectorAll(selector);
-        matchingElements.forEach(el => el.style.fill = "#443d4b");
+        const classList = [...this.classList].join('.');
+
+        if (classList.trim() !== '') {
+            const selector = '.' + classList;
+            const matchingElements = document.querySelectorAll(selector);
+            matchingElements.forEach(el => el.style.fill = "#1b5e20");
+        }
     });
     // Add click event for each country
     country.addEventListener("click", function(e) {
@@ -308,9 +324,43 @@ countries.forEach(country => {
 
                     // Display food waste data if available
                     if (foodWaste) {
-                        foodWastePerCapitaOutput.innerText = foodWaste.perCapita ? foodWaste.perCapita + " kg per year" : "N/A";
-                        totalAnnualFoodWasteOutput.innerText = foodWaste.annual ? foodWaste.annual.toLocaleString() + " tons" : "N/A";
+                        if (countryCode === "US" && foodWaste.breakdown) {
+                            // Show US-specific breakdown, hide per capita/annual
+                            foodWastePerCapitaOutput.closest("li").style.display = "none";
+                            totalAnnualFoodWasteOutput.closest("li").style.display = "none";
+
+                            // Remove any existing breakdown list to avoid duplicates
+                            const existing = container.querySelector(".us-breakdown");
+                            if (existing) existing.remove();
+
+                            // Build and insert the breakdown list
+                            let breakdownHTML = '<ul class="us-breakdown">';
+                            for (let [method, amount] of Object.entries(foodWaste.breakdown)) {
+                                breakdownHTML += `<li><strong>${method}:</strong> ${amount} million tons</li>`;
+                            }
+                            breakdownHTML += '</ul>';
+                            container.querySelector("ul").insertAdjacentHTML("afterend", breakdownHTML);
+                        } else {
+                            // All other countries: show per capita and annual, hide any US breakdown
+                            foodWastePerCapitaOutput.closest("li").style.display = "";
+                            totalAnnualFoodWasteOutput.closest("li").style.display = "";
+
+                            const existing = container.querySelector(".us-breakdown");
+                            if (existing) existing.remove();
+
+                            foodWastePerCapitaOutput.innerText = foodWaste.perCapita
+                                ? foodWaste.perCapita + " kg per year" : "N/A";
+                            totalAnnualFoodWasteOutput.innerText = foodWaste.annual
+                                ? foodWaste.annual.toLocaleString() + " tons" : "N/A";
+                        }
                     } else {
+                        // No data at all
+                        foodWastePerCapitaOutput.closest("li").style.display = "";
+                        totalAnnualFoodWasteOutput.closest("li").style.display = "";
+
+                        const existing = container.querySelector(".us-breakdown");
+                        if (existing) existing.remove();
+
                         foodWastePerCapitaOutput.innerText = "N/A";
                         totalAnnualFoodWasteOutput.innerText = "N/A";
                     }

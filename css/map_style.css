@@ -37,7 +37,7 @@ body {
     width: max-content;
     height: max-content;
     min-height: 30em;
-    background-color: #151218;
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,13 +49,13 @@ svg {
 }
 
 path {
-    fill: #443d4b;
+    fill: #1b5e20;
     stroke: #dcbfff;
     transition: 100ms;
 }
 
 path:hover {
-    fill: #c99aff;
+    fill: #66bb6a;
 }
 
 .side-panel {
@@ -157,7 +157,7 @@ path:hover {
     font-size: 2em;
     background-color: #443d4b;
     color: #fff;
-    border: 1px #dcbfff solid;
+    border: 1px #66bb6a solid;
     cursor: pointer;
 }
 
@@ -177,6 +177,11 @@ button:disabled {
     margin-bottom: 10px;
 }
 
+.zoom-value {
+    color: #66bb6a;
+    font-weight: bold;
+}
+
 /* Footer styling */
 .map-footer {
     position: fixed;
@@ -184,7 +189,7 @@ button:disabled {
     left: 0;
     width: 100%;
     background-color: rgba(29, 26, 32, 0.95);
-    border-top: 1px solid #dcbfff;
+    border-top: 1px solid #66bb6a;
     padding: 1em;
     font-size: 0.85em;
     z-index: 10;
@@ -196,7 +201,7 @@ button:disabled {
 }
 
 .footer-content p {
-    color: #dcbfff;
+    color: #66bb6a;
     font-weight: bold;
     margin-bottom: 0.3em;
 }
@@ -213,12 +218,12 @@ button:disabled {
 }
 
 .footer-content a {
-    color: #c99aff;
+    color: #66bb6a;
     text-decoration: none;
     transition: 100ms;
 }
 
 .footer-content a:hover {
-    color: #dcbfff;
+    color: #66bb6a;
     text-decoration: underline;
 }
