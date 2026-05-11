@@ -22,9 +22,9 @@ function normalizeCPI(obj) {
 async function loadData() {
 
     const [cartRes, hawaiiRes, usCartRes] = await Promise.all([
-        fetch("/WastedAloha/pages/interactive/calculator/hawaii_groceries_2026.json"),
-        fetch("/WastedAloha/pages/interactive/calculator/hawaii_cpi.json"),
-        fetch("/WastedAloha/pages/interactive/calculator/us_city_groceries.json")
+        fetch("/WastedAloha/pages/calculator/js/hawaii_groceries_2026.json"),
+        fetch("/WastedAloha/pages/calculator/js/hawaii_cpi.json"),
+        fetch("/WastedAloha/pages/calculator/js/us_city_groceries.json")
     ]);
 
     cart2026 = await cartRes.json();
