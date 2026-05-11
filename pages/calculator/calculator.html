@@ -37,9 +37,13 @@
     <h2>Historical Grocery Calculator</h2>
 
     <p>
-        Compare grocery prices across U.S. states and years.
-        Build a grocery cart and discover how costs have changed over time.
+        Enter numbers in the fields below to build a grocery cart and see how costs have changed for Hawai'i residents over time. 
     </p>
+    <p>
+        Click "Calculate Cart Price" to see the price of your cart, as well as predicted historical prices for Hawai'i based on urban Hawai'i's food CPI. The chart also features a comparison with the U.S. city average prices.
+    </p>
+
+    <hr>
 
     <div class="calculator-container">
 
@@ -110,6 +114,105 @@
 
     </div>
 
+    <hr>
+
+</section>
+
+<section class="article-citations">
+    <h2>Data Sources &amp; Methodology</h2>
+
+  <p>
+    This visualization combines contemporary grocery pricing data with historical
+    consumer price index (CPI) records to estimate long-term food price trends
+    in Hawaiʻi and the United States.
+  </p>
+
+  <h3>Primary Sources</h3>
+  <ul>
+    <li>
+      <a href="https://worldpopulationreview.com/state-rankings/grocery-prices-by-state" target="_blank" rel="noopener noreferrer">
+        World Population Review – Grocery Prices by State (2026)
+      </a>
+      <br />
+      Used for contemporary average weekly grocery price comparisons by U.S. state.
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/CUUSA426SAF1" target="_blank" rel="noopener noreferrer">
+        FRED – CPI for Urban Hawaii (CUUSA426SAF1)
+      </a>
+      <br />
+      Used to estimate historical Hawaiʻi grocery prices from 1984–2025.
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/CPIUFDSL" target="_blank" rel="noopener noreferrer">
+        FRED – CPI for All Urban Consumers: U.S. City Average (CPIUFDSL)
+      </a>
+      <br />
+      Used to interpolate and normalize missing historical price values.
+    </li>
+  </ul>
+
+  <h3>Historical Food Price Series (FRED)</h3>
+  <p>
+    The following national average food price series were used as baseline
+    reference datasets:
+  </p>
+
+  <ul>
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000709112" target="_blank" rel="noopener noreferrer">
+        Average Price: Milk (APU0000709112)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000708111" target="_blank" rel="noopener noreferrer">
+        Average Price: Eggs (APU0000708111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000711111" target="_blank" rel="noopener noreferrer">
+        Average Price: Apples (APU0000711111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000702111" target="_blank" rel="noopener noreferrer">
+        Average Price: Bread (APU0000702111)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000701312" target="_blank" rel="noopener noreferrer">
+        Average Price: Rice (APU0000701312)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000FF1101" target="_blank" rel="noopener noreferrer">
+        Average Price: Chicken (APU0000FF1101)
+      </a>
+    </li>
+
+    <li>
+      <a href="https://fred.stlouisfed.org/series/APU0000703112" target="_blank" rel="noopener noreferrer">
+        Average Price: Ground Beef (APU0000703112)
+      </a>
+    </li>
+  </ul>
+
+  <h3>Notes</h3>
+  <p>
+    Historical Hawaiʻi estimates were derived by adjusting national food price
+    series using Hawaiʻi-specific CPI trends where direct state-level food price
+    data was unavailable. Interpolated values are estimates and should be
+    interpreted as approximations rather than exact historical market prices.
+  </p>
+    <p>Data on U.S. city average prices for certain years for certain products was not available. In these cases, the data was interpolated (estimated) using CPI data and prices from neighboring years. Years with interpolated data are indicated by triangular points on the graph.</p>
+    <p>Data for 2026 Hawai'i grocery prices was collected manually by this site's creators.</p>
 </section>
 
 <footer>
